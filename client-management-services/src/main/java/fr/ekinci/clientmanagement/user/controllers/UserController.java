@@ -1,6 +1,6 @@
 package fr.ekinci.clientmanagement.user.controllers;
 
-import fr.ekinci.clientmanagement.user.models.UserDto;
+import fr.ekinci.client.models.user.UserDto;
 // import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

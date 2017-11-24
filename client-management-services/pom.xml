@@ -83,5 +83,11 @@
 			<artifactId>aspectj-aop-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>gokan.ekinci</groupId>
+			<artifactId>client-models</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>

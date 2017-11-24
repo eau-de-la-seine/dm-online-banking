@@ -30,11 +30,11 @@ public class RestLogAspect {
 	public void restAnnotation() {}
 
 	@Around("restAnnotation() && execution(* *(..))")
-	public Object restLog(ProceedingJoinPoint joinPoint) {
+	public Object restLog(ProceedingJoinPoint joinPoint) throws Throwable {
 		final MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		final Method method = signature.getMethod();
 
-		final Class<?> controllerClass = method.getDeclaringClass();
+		final Class<?> controllerClass = joinPoint.getTarget().getClass();
 		final RequestMapping controllerAnnotation = controllerClass.getAnnotation(RequestMapping.class);
 		final String controllerRestPath = (controllerAnnotation.path().length == 0) ? "" : controllerAnnotation.path()[0];
 
@@ -46,23 +46,31 @@ public class RestLogAspect {
 
 		// @Before code
 		Object returnValue = null;
+		Throwable throwable = null;
 		try {
 			returnValue = joinPoint.proceed();
-		} catch (Throwable throwable) {
-			log.warning(String.format("[RestLogAspect] : %s", throwable.getMessage()));
+		} catch (Throwable throwable1) {
+			throwable = throwable1;
+			log.warning(String.format("[RestLogAspect] : %s", throwable1.getMessage()));
 		}
 		// @After code
 
-		log.info(String.format("[REST][%sms][%s][%s][%s][%s()] %s",
-				Duration.between(start, Instant.now()).toMillis(),
-				controllerClass.getSimpleName(),
-				requestMethod,
-				controllerRestPath + methodRestPath,
-				method.getName(),
-				Arrays.stream(joinPoint.getArgs())
+		final String logMessage = String.format("[REST][%sms][%s][%s][%s][%s()] %s",
+			Duration.between(start, Instant.now()).toMillis(),
+			controllerClass.getSimpleName(),
+			requestMethod,
+			controllerRestPath + methodRestPath,
+			method.getName(),
+			Arrays.stream(joinPoint.getArgs())
 					.map(argument -> (argument != null) ? argument.toString() : "null")
 					.collect(Collectors.joining(", "))
-		));
+		);
+
+		log.info(logMessage);
+
+		if (throwable != null) {
+			throw throwable;
+		}
 
 		return returnValue;
 	}
