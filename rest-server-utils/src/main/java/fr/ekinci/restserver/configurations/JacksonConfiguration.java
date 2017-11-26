@@ -14,6 +14,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
  * 		* Excluding null fields with {@link com.fasterxml.jackson.annotation.JsonInclude.Include#NON_NULL}
  *
  * See : https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/http/converter/json/Jackson2ObjectMapperBuilder.html
+ *
+ * @author Gokan EKINCI
  */
 @Configuration
 public class JacksonConfiguration {

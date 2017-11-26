@@ -11,6 +11,9 @@ import org.dozer.Mapper;
 
 import java.util.List;
 
+/**
+ * @author Gokan EKINCI
+ */
 @Service
 public class UserDAO extends AbstractDAO<UserDto, UserEntity, Long> {
 
@@ -44,7 +47,7 @@ public class UserDAO extends AbstractDAO<UserDto, UserEntity, Long> {
 	 * @return
 	 */
 	public List<UserDto> findByName(String name, int size) {
-		return userRepository.findByName(name, new PageRequest(0, size))
+		return userRepository.findByName(name.toLowerCase(), new PageRequest(0, size))
 			.map(u -> dozer.map(u, UserDto.class))
 			.getContent();
 	}

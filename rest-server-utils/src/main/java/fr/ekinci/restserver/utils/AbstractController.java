@@ -29,7 +29,7 @@ public abstract class AbstractController<DTO, ID extends Serializable, ABSTRACT_
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<DTO> get(@PathVariable ID id) {
+	public ResponseEntity<DTO> get(@PathVariable("id") ID id) {
 		final Optional<DTO> dtoOpt = dao.get(id);
 		return (dtoOpt.isPresent()) ?
 			new ResponseEntity<>(dtoOpt.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -64,13 +64,13 @@ public abstract class AbstractController<DTO, ID extends Serializable, ABSTRACT_
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> update(@PathVariable ID id, @Valid @RequestBody DTO dto) {
+	public ResponseEntity<?> update(@PathVariable("id") ID id, @Valid @RequestBody DTO dto) {
 		dao.update(id, dto);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@PathVariable ID id) {
+	public ResponseEntity<?> delete(@PathVariable("id") ID id) {
 		dao.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

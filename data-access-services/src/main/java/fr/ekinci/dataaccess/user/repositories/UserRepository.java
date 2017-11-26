@@ -14,6 +14,6 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, L
 	@Query("SELECT u FROM UserEntity u JOIN FETCH u.accounts WHERE u.id = ?1")
 	UserEntity eagerFetchUserById(Long id);
 
-	@Query("SELECT u FROM UserEntity u WHERE u.lastName LIKE '?1%' OR u.firstName LIKE '?1%'")
+	@Query("SELECT u FROM UserEntity u WHERE LOWER(u.lastName) LIKE ?1% OR LOWER(u.firstName) LIKE ?1%")
 	Page<UserEntity> findByName(String name, Pageable pageable);
 }

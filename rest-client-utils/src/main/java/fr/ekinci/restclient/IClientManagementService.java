@@ -20,12 +20,9 @@ public interface IClientManagementService {
 	/**
 	 * Update some information for given user id
 	 *
-	 * @param userId
-	 * @param address
-	 * @param homePhone
-	 * @param cellPhone
+	 * @param user
 	 */
-	void updateInfo(String userId, String address, String homePhone, String cellPhone);
+	void updateInfo(UserDto user);
 
 	/**
 	 * Get user by id
@@ -38,17 +35,16 @@ public interface IClientManagementService {
 	/**
 	 * Get users by name
 	 *
-	 * @param lastName
+	 * @param name
 	 * @return
 	 */
-	List<UserDto> getUsersByLastName(String lastName);
+	List<UserDto> getUsersByName(String name);
 
 	/**
 	 * Create a new account for user
 	 *
-	 * @param userId
 	 * @param account
 	 * @return
 	 */
-	AccountDto addAccount(String userId, AccountDto account);
+	AccountDto addAccount(AccountDto account);
 }

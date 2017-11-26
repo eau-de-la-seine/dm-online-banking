@@ -41,7 +41,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\" : \"Livret Jeune\",\n\t\"shortName\": \"J\"\n}"
+					"raw": "{\n\t\"name\" : \"Livret A\",\n\t\"shortName\": \"A\"\n}"
 				},
 				"description": ""
 			},
@@ -145,6 +145,139 @@
 				"method": "GET",
 				"header": [],
 				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25002/data-access/users/research?name={name}",
+			"request": {
+				"url": {
+					"raw": "localhost:25002/data-access/users/research?name=Tot",
+					"host": [
+						"localhost"
+					],
+					"port": "25002",
+					"path": [
+						"data-access",
+						"users",
+						"research"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Tot",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25004/client-management/users/{id}",
+			"request": {
+				"url": "localhost:25004/client-management/users/1",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25004/client-management/users",
+			"request": {
+				"url": "localhost:25004/client-management/users",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"87 bd Jean-Jaures 75015 PARIS\",\n\t\"firstName\": \"Name\",\n\t\"lastName\": \"Last\",\n\t\"birthDate\": \"1960-01-01\", \n\t\"cellPhone\": \"0669696969\",\n\t\"homePhone\": \"0169696969\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25004/client-management/users/{id}",
+			"request": {
+				"url": "localhost:25004/client-management/users/1",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"87 bd Jean-Jaures 75015 PARIS\",\n\t\"firstName\": \"BBBB\",\n\t\"lastName\": \"Last\",\n\t\"birthDate\": \"1960-01-01\", \n\t\"cellPhone\": \"33333333\",\n\t\"homePhone\": \"33333333\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25004/client-management/users/research?name={name}",
+			"request": {
+				"url": {
+					"raw": "localhost:25004/client-management/users/research?name=Tot",
+					"host": [
+						"localhost"
+					],
+					"port": "25004",
+					"path": [
+						"client-management",
+						"users",
+						"research"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Tot",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25004/client-management/accounts",
+			"request": {
+				"url": "localhost:25004/client-management/accounts",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"user\": {\n\t\t\"id\": 1\n\t},\n\t\"type\": {\n\t\t\"id\": 2\n\t},\n\t\"amount\": 0\n}"
+				},
 				"description": ""
 			},
 			"response": []

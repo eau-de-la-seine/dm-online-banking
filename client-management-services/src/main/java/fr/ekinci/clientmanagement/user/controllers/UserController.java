@@ -1,12 +1,11 @@
 package fr.ekinci.clientmanagement.user.controllers;
 
 import fr.ekinci.client.models.user.UserDto;
-// import org.springframework.data.domain.PageRequest;
+import fr.ekinci.restclient.IClientManagementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,51 +16,37 @@ import java.util.Optional;
 @RequestMapping(path = "/users")
 public class UserController {
 
+	private final IClientManagementService clientManagementService;
+
+	@Autowired
+	public UserController(IClientManagementService clientManagementService) {
+		this.clientManagementService = clientManagementService;
+	}
+
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<UserDto> get(@PathVariable Long id) {
-		// TODO
-		final Optional<UserDto> dtoOpt = Optional.of(new UserDto());
+	public ResponseEntity<UserDto> get(@PathVariable("id") String id) {
+		final Optional<UserDto> dtoOpt = Optional.of(clientManagementService.getUserById(id));
 		return (dtoOpt.isPresent()) ?
 			new ResponseEntity<>(dtoOpt.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	/**
-	 * If page and size request parameters are filled, return a page. Otherwise, return a list of all elements.
-	 *
-	 * @param page      Page index, starts with 0
-	 * @param size      Page size
-	 * @return          Can return a TODO @link org.springframework.data.domain.Page OR a {@link List} of DTO
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<?> get(
-		@RequestParam(value = "page", required = false) Integer page,
-		@RequestParam(value = "size", required = false) Integer size
-	) {
-		// Pagination
-		if (page != null && size != null) {
-			// TODO
-		}
-
-		// TODO
-		final List<UserDto> userDtoList = Collections.emptyList();
-		return (!userDtoList.isEmpty()) ?
-			new ResponseEntity<>(userDtoList, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	@RequestMapping(path = "/research", method = RequestMethod.GET)
+	public ResponseEntity<List<UserDto>> findByName(@RequestParam("name") String name) {
+		final List<UserDto> dtoOpt = clientManagementService.getUsersByName(name);
+		return (dtoOpt.isEmpty()) ?
+			new ResponseEntity<>(HttpStatus.NO_CONTENT) :
+			new ResponseEntity<>(dtoOpt, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<UserDto> create(@RequestBody UserDto user) {
-		return new ResponseEntity<>(new UserDto(), HttpStatus.OK);
+		return new ResponseEntity<>(clientManagementService.create(user), HttpStatus.OK);
 	}
 
-	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> update(@PathVariable String id, @RequestBody UserDto user) {
-		// TODO
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@PathVariable String id) {
-		// TODO
+	@RequestMapping(path = "/{id}", method = RequestMethod.PATCH)
+	public ResponseEntity<?> update(@PathVariable("id") String userId, @RequestBody UserDto user) {
+		user.setId(userId);
+		clientManagementService.updateInfo(user);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

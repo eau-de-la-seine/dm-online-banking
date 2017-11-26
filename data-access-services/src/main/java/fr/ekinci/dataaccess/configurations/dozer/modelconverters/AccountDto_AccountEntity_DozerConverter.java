@@ -5,6 +5,7 @@ import fr.ekinci.client.models.account.AccountTypeDto;
 import fr.ekinci.client.models.user.UserDto;
 import fr.ekinci.dataaccess.account.entities.AccountEntity;
 import fr.ekinci.dataaccess.account.entities.AccountTypeEntity;
+import fr.ekinci.dataaccess.configurations.dozer.LocalDate_Date_DozerConverter;
 import fr.ekinci.dataaccess.user.entities.UserEntity;
 import org.dozer.DozerBeanMapper;
 import org.dozer.DozerConverter;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
  * A {@link DozerConverter} class :
  * * Must have default constructor
  * * Cannot be a Spring Component
+ * * Cannot inject inside
  *
  * @author Gokan EKINCI
  */
@@ -59,9 +61,25 @@ public class AccountDto_AccountEntity_DozerConverter extends DozerConverter<Acco
 
 	@Override
 	public AccountDto convertFrom(AccountEntity entity, AccountDto dto) {
+
+
+		// Using if instead of Dozer because Dozer act wierdly for some inner types
+		UserDto userDto = null;
+		final UserEntity userEntity = entity.getUser();
+		if (entity.getUser() != null) {
+			userDto = UserDto.builder()
+				.id((userEntity.getId() != null) ? String.valueOf(userEntity.getId()) : null)
+				.birthDate((userEntity.getBirthDate() != null) ? new LocalDate_Date_DozerConverter().convertFrom(userEntity.getBirthDate(), null) : null)
+				.firstName(userEntity.getFirstName())
+				.lastName(userEntity.getLastName())
+				.cellPhone(userEntity.getCellPhone())
+				.homePhone(userEntity.getHomePhone())
+				.build();
+		}
+
 		return AccountDto.builder()
-			.id(String.valueOf(entity.getId()))
-			.user((entity.getUser() != null) ? basicDozer.map(entity.getUser(), UserDto.class) : null)
+			.id((entity.getId() != null) ? String.valueOf(entity.getId()) : null)
+			.user(userDto)
 			.type((entity.getType() != null) ? basicDozer.map(entity.getType(), AccountTypeDto.class) : null)
 			.amount(entity.getAmount())
 			.build();
