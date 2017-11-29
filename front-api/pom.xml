@@ -11,7 +11,7 @@
 
 	<groupId>fr.ekinci</groupId>
 	<artifactId>front-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>front-api</name>
 	<description>This module checks session and redirects (as a reverse-proxy) the requests from client to services</description>
