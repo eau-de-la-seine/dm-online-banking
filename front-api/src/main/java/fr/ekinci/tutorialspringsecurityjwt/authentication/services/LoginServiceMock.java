@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.ekinci.tutorialspringsecurityjwt.authentication.models.LoginRequest;
 import fr.ekinci.tutorialspringsecurityjwt.authentication.models.LoginResponse;
 import fr.ekinci.tutorialspringsecurityjwt.commons.models.Profile;
+import fr.ekinci.tutorialspringsecurityjwt.security.models.Role;
 import fr.ekinci.tutorialspringsecurityjwt.security.models.Session;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.IJwtService;
 import org.dozer.Mapper;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
 
 /**
  * TODO : Create a real LoginService
@@ -48,6 +51,7 @@ public class LoginServiceMock implements ILoginService {
 		final LoginResponse loginResponse = LoginResponse.builder()
 			.guid("MOCK_GUID")
 			.passwordExpired(false)
+			.roles(Arrays.asList(Role.ADVISOR))
 			.profile(
 				Profile.builder()
 					.email("john.lennon@gmail.com")

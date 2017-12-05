@@ -21,12 +21,10 @@ import com.netflix.zuul.ZuulFilter;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final GenericFilterBean authenticationFilter;
-	private final ZuulFilter zuulReverseProxyFilter;
 
 	@Autowired
 	public WebSecurityConfig(IJwtService jwtService) {
 		this.authenticationFilter = new AuthenticationFilter(jwtService);
-		this.zuulReverseProxyFilter = new ZuulFilterImplementation();
 	}
 
 	/**

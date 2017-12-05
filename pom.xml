@@ -9,14 +9,14 @@
 	<name>dm-online-banking</name>
 
 	<modules>
-		<module>client-management-services</module>
+		<module>front-api</module>
 		<module>data-access-services</module>
-		<module>aspectj-aop-utils</module>
-		<module>client-models</module>
+		<module>client-management-services</module>
 		<module>client-services</module>
+		<module>client-models</module>
+		<module>aspectj-aop-utils</module>
 		<module>rest-client-utils</module>
 		<module>rest-server-utils</module>
-		<module>front-api</module>
 	</modules>
 
 	<properties>

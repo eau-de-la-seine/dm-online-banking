@@ -28,6 +28,71 @@
 			"response": []
 		},
 		{
+			"name": "localhost:25004/client-management/users",
+			"request": {
+				"url": "localhost:25004/client-management/users",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"87 bd Jean-Jaures 75015 PARIS\",\n\t\"firstName\": \"Name\",\n\t\"lastName\": \"Last\",\n\t\"birthDate\": \"1960-01-01\", \n\t\"cellPhone\": \"0669696969\",\n\t\"homePhone\": \"0169696969\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25001/authentication/login",
+			"request": {
+				"url": "localhost:25001/authentication/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"\",\n\t\"password\": \"\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:25001/client-management/users",
+			"request": {
+				"url": "localhost:25001/client-management/users",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJndWlkXCI6XCJNT0NLX0dVSURcIixcInJvbGVzXCI6W1wiUk9MRV9BRFZJU09SXCJdLFwicGFzc3dvcmRFeHBpcmVkXCI6ZmFsc2UsXCJwcm9maWxlXCI6e1wiZmlyc3ROYW1lXCI6XCJKb2huXCIsXCJsYXN0TmFtZVwiOlwiTEVOTk9OXCIsXCJlbWFpbFwiOlwiam9obi5sZW5ub25AZ21haWwuY29tXCJ9fSJ9.aFLeA6Hsv0LB3yl58TemwJh1irithirnmChdO30R9l9dXdH63rAhsOxTukRz9P9ZxDwZAjj98XzfaEsqHJy4gQ",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"address\": \"87 bd Jean-Jaures 75015 PARIS\",\n\t\"firstName\": \"Name\",\n\t\"lastName\": \"Last\",\n\t\"birthDate\": \"1960-01-01\", \n\t\"cellPhone\": \"0669696969\",\n\t\"homePhone\": \"0169696969\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:25002/data-access/account-types",
 			"request": {
 				"url": "localhost:25002/data-access/account-types",
@@ -187,26 +252,6 @@
 				"method": "GET",
 				"header": [],
 				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:25004/client-management/users",
-			"request": {
-				"url": "localhost:25004/client-management/users",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"address\": \"87 bd Jean-Jaures 75015 PARIS\",\n\t\"firstName\": \"Name\",\n\t\"lastName\": \"Last\",\n\t\"birthDate\": \"1960-01-01\", \n\t\"cellPhone\": \"0669696969\",\n\t\"homePhone\": \"0169696969\"\n}"
-				},
 				"description": ""
 			},
 			"response": []

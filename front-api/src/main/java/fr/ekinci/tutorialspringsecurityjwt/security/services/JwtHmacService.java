@@ -34,20 +34,23 @@ public class JwtHmacService implements IJwtService {
 	static {
 		notAuthenticated = AuthenticationImpl.builder()
 			.authenticated(false)
-			.name("NOT_AUTHENTICATED_USER") // "Principal must not be null"
+			.name("NOT_AUTHENTICATED_USER") // For Spring reasons, "Principal must not be null"
 			.build();
 	}
 
+	private final ISessionService sessionService;
 	private final SignatureAlgorithm algorithm;
 	private final Long duration;
 	private final String secretKey;
 
 	@Autowired
 	public JwtHmacService(
+		ISessionService sessionService,
 		@Value("${jwt.hmac.algorithm:HS512}") SignatureAlgorithm algorithm,
 		@Value("${jwt.duration:#{null}}") Long duration,
 		@Value("${jwt.hmac.secret.key}") String secretKey
 	) {
+		this.sessionService = sessionService;
 		this.algorithm = algorithm;
 		this.duration = duration;
 		this.secretKey = secretKey;
@@ -77,6 +80,7 @@ public class JwtHmacService implements IJwtService {
 			return AuthenticationImpl.builder()
 				.authenticated(true)
 				.principal(subject)
+				.authorities(sessionService.extractSubjectRoles(subject))
 				.build();
 		} catch (SignatureException e) {
 			log.trace(String.format("%s Authorization header bad format", LOG_HEADER), e);

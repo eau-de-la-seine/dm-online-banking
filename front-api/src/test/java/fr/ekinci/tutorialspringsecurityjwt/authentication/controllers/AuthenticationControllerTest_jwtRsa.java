@@ -10,9 +10,11 @@ import fr.ekinci.tutorialspringsecurityjwt.authentication.services.LoginServiceM
 import fr.ekinci.tutorialspringsecurityjwt.commons.configurations.dozer.DozerConfiguration;
 import fr.ekinci.tutorialspringsecurityjwt.commons.models.Profile;
 import fr.ekinci.tutorialspringsecurityjwt.security.configurations.WebSecurityConfig;
+import fr.ekinci.tutorialspringsecurityjwt.security.models.Role;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.IJwtService;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.ISessionService;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.JwtRsaService;
+import fr.ekinci.tutorialspringsecurityjwt.security.services.SessionService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.dozer.Mapper;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -59,7 +62,7 @@ public class AuthenticationControllerTest_jwtRsa {
 
 	@Test
 	public void testLogin() throws Exception {
-		final String route = "/login";
+		final String route = "/authentication/login";
 		final String sentBody = sentBody_ok();
 		final String expectedResult = expectedResult_ok();
 
@@ -81,12 +84,13 @@ public class AuthenticationControllerTest_jwtRsa {
 
 	private String expectedResult_ok() throws JsonProcessingException {
 		final String guid = "MOCK_GUID";
-		final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJndWlkXCI6XCJNT0NLX0dVSURcIixcInBhc3N3b3JkRXhwaXJlZFwiOmZhbHNlLFwicHJvZmlsZVwiOntcImlkXCI6bnVsbCxcImZpcnN0TmFtZVwiOlwiSm9oblwiLFwibGFzdE5hbWVcIjpcIkxFTk5PTlwiLFwiZW1haWxcIjpcImpvaG4ubGVubm9uQGdtYWlsLmNvbVwifX0ifQ._0n7fUb73WDy0l2h7ZL7X-RCvgUBquCeOSOoaKNaVVr5L4F914u6Rfa7ky4v58wm6pvDYIF4v04YJZAO2skPuQ";
+		final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJndWlkXCI6XCJNT0NLX0dVSURcIixcInJvbGVzXCI6W1wiUk9MRV9BRFZJU09SXCJdLFwicGFzc3dvcmRFeHBpcmVkXCI6ZmFsc2UsXCJwcm9maWxlXCI6e1wiaWRcIjpudWxsLFwiZmlyc3ROYW1lXCI6XCJKb2huXCIsXCJsYXN0TmFtZVwiOlwiTEVOTk9OXCIsXCJlbWFpbFwiOlwiam9obi5sZW5ub25AZ21haWwuY29tXCJ9fSJ9.ccBxrDhbGrK7FQA7uiYZXxMI0U_fg2yzP0K2jaPhIrHNurVjZhaafbyWnBZZWt06QPfnBUBlGzeENGSvFaq3Wg";
 
 		return mapper.writeValueAsString(
 			LoginResponse.builder()
 				.guid(guid)
 				.passwordExpired(false)
+				.roles(Arrays.asList(Role.ADVISOR))
 				.profile(
 					Profile.builder()
 						.email("john.lennon@gmail.com")
@@ -103,6 +107,7 @@ public class AuthenticationControllerTest_jwtRsa {
 	 */
 	@Import({
 		DozerConfiguration.class,
+		SessionService.class,
 
 		// Needed for setting WebSecurityConfig: https://stackoverflow.com/a/39427897
 		WebSecurityConfig.class,
@@ -112,11 +117,12 @@ public class AuthenticationControllerTest_jwtRsa {
 
 		@Bean
 		public IJwtService jwtService(
+			ISessionService sessionService,
 			@Value("${jwt.rsa.algorithm:RS512}") SignatureAlgorithm algorithm,
 			@Value("${jwt.duration:#{null}}") Long duration,
 			KeyPair rsaKeyPair
 		) {
-			return new JwtRsaService(algorithm, duration, rsaKeyPair);
+			return new JwtRsaService(sessionService, algorithm, duration, rsaKeyPair);
 		}
 
 		@Bean

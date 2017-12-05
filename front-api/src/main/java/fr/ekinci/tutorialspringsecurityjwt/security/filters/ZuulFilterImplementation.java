@@ -1,9 +1,14 @@
 package fr.ekinci.tutorialspringsecurityjwt.security.filters;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.ZuulFilter;
+import fr.ekinci.tutorialspringsecurityjwt.security.services.IAuthorizationRouteService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +18,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class ZuulFilterImplementation extends ZuulFilter {
+
+	private final IAuthorizationRouteService authorizationRouteService;
+
+	@Autowired
+	public ZuulFilterImplementation(IAuthorizationRouteService authorizationRouteService) {
+		this.authorizationRouteService = authorizationRouteService;
+	}
 
 	@Override
 	public String filterType() {
@@ -25,20 +37,22 @@ public class ZuulFilterImplementation extends ZuulFilter {
 	}
 
 	/**
-	 * If return `true` or `false`, routing is done.
-	 * If return `true` then execute {@link com.netflix.zuul.IZuulFilter#run()}
+	 * This method is executed after {@link AuthenticationFilter#doFilter(ServletRequest, ServletResponse, FilterChain)}
+	 * Either this method return `true` or `false`, routing process is done. To avoid routing process, set {@link RequestContext#setSendZuulResponse(boolean)} to `false`.
+	 * If this method `true` then {@link com.netflix.zuul.IZuulFilter#run()} method will be executed.
 	 */
 	@Override
 	public boolean shouldFilter() {
-		// TODO : Handle your users and their roles
+		final boolean isAuthenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+
+		final boolean isAuthorizedRoute = isAuthenticated && authorizationRouteService.isAuthorizedRoute();
+
 		RequestContext.getCurrentContext()
 			.setSendZuulResponse(
-				SecurityContextHolder.getContext()
-					.getAuthentication()
-					.isAuthenticated()
+				isAuthorizedRoute
 			);
 
-		return true;
+		return isAuthorizedRoute;
 	}
 
 	@Override

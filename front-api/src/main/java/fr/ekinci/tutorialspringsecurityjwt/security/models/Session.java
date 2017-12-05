@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author Gokan EKINCI
  */
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Session {
 	private String guid;
+	private List<String> roles;
 	private Boolean passwordExpired;
 	private Profile profile;
 }

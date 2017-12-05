@@ -10,9 +10,11 @@ import fr.ekinci.tutorialspringsecurityjwt.authentication.services.LoginServiceM
 import fr.ekinci.tutorialspringsecurityjwt.commons.configurations.dozer.DozerConfiguration;
 import fr.ekinci.tutorialspringsecurityjwt.commons.models.Profile;
 import fr.ekinci.tutorialspringsecurityjwt.security.configurations.WebSecurityConfig;
+import fr.ekinci.tutorialspringsecurityjwt.security.models.Role;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.IJwtService;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.ISessionService;
 import fr.ekinci.tutorialspringsecurityjwt.security.services.JwtHmacService;
+import fr.ekinci.tutorialspringsecurityjwt.security.services.SessionService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.dozer.Mapper;
 import org.junit.Test;
@@ -29,6 +31,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -58,7 +63,7 @@ public class AuthenticationControllerTest_jwtHmac {
 
 	@Test
 	public void testLogin() throws Exception {
-		final String route = "/login";
+		final String route = "/authentication/login";
 		final String sentBody = sentBody_ok();
 		final String expectedResult = expectedResult_ok();
 
@@ -80,12 +85,13 @@ public class AuthenticationControllerTest_jwtHmac {
 
 	private String expectedResult_ok() throws JsonProcessingException {
 		final String guid = "MOCK_GUID";
-		final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJndWlkXCI6XCJNT0NLX0dVSURcIixcInBhc3N3b3JkRXhwaXJlZFwiOmZhbHNlLFwicHJvZmlsZVwiOntcImlkXCI6bnVsbCxcImZpcnN0TmFtZVwiOlwiSm9oblwiLFwibGFzdE5hbWVcIjpcIkxFTk5PTlwiLFwiZW1haWxcIjpcImpvaG4ubGVubm9uQGdtYWlsLmNvbVwifX0ifQ.e_fKa8bdo_G890s7lreAnA8TdEot_VIkb5saVykI4qn9euoKd3dC13lZptUcE3sG2R-KmU2AEg-FvbT4reEpvw";
+		final String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ7XCJndWlkXCI6XCJNT0NLX0dVSURcIixcInJvbGVzXCI6W1wiUk9MRV9BRFZJU09SXCJdLFwicGFzc3dvcmRFeHBpcmVkXCI6ZmFsc2UsXCJwcm9maWxlXCI6e1wiaWRcIjpudWxsLFwiZmlyc3ROYW1lXCI6XCJKb2huXCIsXCJsYXN0TmFtZVwiOlwiTEVOTk9OXCIsXCJlbWFpbFwiOlwiam9obi5sZW5ub25AZ21haWwuY29tXCJ9fSJ9.dvCKc8Rl73HwwEn3ARjZXAIbSdZfSVdL47QIz84hr-hIge3u50_EsZHFOpZWii2KWwgLXOw8fU9G3xMdoutRCw";
 
 		return mapper.writeValueAsString(
 			LoginResponse.builder()
 				.guid(guid)
 				.passwordExpired(false)
+				.roles(Arrays.asList(Role.ADVISOR))
 				.profile(
 					Profile.builder()
 						.email("john.lennon@gmail.com")
@@ -102,6 +108,7 @@ public class AuthenticationControllerTest_jwtHmac {
 	 */
 	@Import({
 		DozerConfiguration.class,
+		SessionService.class,
 
 		// Needed for setting WebSecurityConfig: https://stackoverflow.com/a/39427897
 		WebSecurityConfig.class,
@@ -111,11 +118,12 @@ public class AuthenticationControllerTest_jwtHmac {
 
 		@Bean
 		public IJwtService jwtService(
+			ISessionService sessionService,
 			@Value("${jwt.hmac.algorithm:HS512}") SignatureAlgorithm algorithm,
 			@Value("${jwt.duration:#{null}}") Long duration,
 			@Value("${jwt.hmac.secret.key}") String secretKey
 		) {
-			return new JwtHmacService(algorithm, duration, secretKey);
+			return new JwtHmacService(sessionService, algorithm, duration, secretKey);
 		}
 
 		@Bean

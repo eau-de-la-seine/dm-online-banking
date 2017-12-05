@@ -12,11 +12,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Date;
 
 /**
@@ -37,19 +34,23 @@ public class JwtRsaService implements IJwtService {
 	static {
 		notAuthenticated = AuthenticationImpl.builder()
 			.authenticated(false)
+			.name("NOT_AUTHENTICATED_USER") // For Spring reasons, "Principal must not be null"
 			.build();
 	}
 
+	private final ISessionService sessionService;
 	private final SignatureAlgorithm algorithm;
 	private final Long duration;
 	private final KeyPair rsaKeyPair;
 
 	@Autowired
 	public JwtRsaService(
-			@Value("${jwt.rsa.algorithm:RS512}") SignatureAlgorithm algorithm,
-			@Value("${jwt.duration:#{null}}") Long duration,
-			KeyPair rsaKeyPair
+		ISessionService sessionService,
+		@Value("${jwt.rsa.algorithm:RS512}") SignatureAlgorithm algorithm,
+		@Value("${jwt.duration:#{null}}") Long duration,
+		KeyPair rsaKeyPair
 	) {
+		this.sessionService = sessionService;
 		this.algorithm = algorithm;
 		this.duration = duration;
 		this.rsaKeyPair = rsaKeyPair;
@@ -79,6 +80,7 @@ public class JwtRsaService implements IJwtService {
 			return AuthenticationImpl.builder()
 				.authenticated(true)
 				.principal(subject)
+				.authorities(sessionService.extractSubjectRoles(subject))
 				.build();
 		} catch (SignatureException e) {
 			log.trace(String.format("%s Authorization header bad format", LOG_HEADER), e);
